@@ -2,7 +2,7 @@ package cogo_test
 
 import (
   "testing"
-  "cogo"
+  "gitlab.com/naranza/cogo"
 )
 
 type Config struct {

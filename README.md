@@ -1,6 +1,6 @@
 # Cogo
 
-**Cogo** is a lightweight Go package for loading structured configuration from plain text files.  
+**Cogo** (Config for Go) is a lightweight Go package for loading structured configuration from plain text files.  
 It supports parsing config files written in a `key type value` format and mapping the values directly into a Go struct.
 
 Example use-case: Loading application settings from `.cogo` files in a strongly-typed way.
