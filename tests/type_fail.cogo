@@ -1,0 +1,6 @@
+# Comment line
+Port int 8080
+Debug bool true
+
+Rate float64 0.75
+Name strings example
