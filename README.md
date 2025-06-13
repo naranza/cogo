@@ -44,26 +44,26 @@ Name string MyApp
 package main
 
 import (
-    "fmt"
-    "log"
-    "gitlab.com/naranza/cogo"
+  "fmt"
+  "log"
+  "gitlab.com/naranza/cogo"
 )
 
 type Config struct {
-    Port  int
-    Debug bool
-    Rate  float64
-    Name  string
+  Port  int
+  Debug bool
+  Rate  float64
+  Name  string
 }
 
 func main() {
-    var cfg Config
-    err := cogo.LoadConfig("config.cogo", &cfg)
-    if err != nil {
-        log.Fatal(err)
-    }
+  var cfg Config
+  err := cogo.LoadConfig("config.cogo", &cfg)
+  if err != nil {
+      log.Fatal(err)
+  }
 
-    fmt.Printf("Loaded config: %+v\n", cfg)
+  fmt.Printf("Loaded config: %+v\n", cfg)
 }
 ```
 
