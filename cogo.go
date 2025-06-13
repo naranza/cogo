@@ -11,9 +11,8 @@ import (
   "strings"
 )
 
-const Version = "2025.1"
+const Version = "2025.2"
 
-// LoadConfig reads a config file in "key type value" format and fills the struct pointed to by 'out'.
 func LoadConfig(filename string, out any) error {
   ptrVal := reflect.ValueOf(out)
   if ptrVal.Kind() != reflect.Ptr || ptrVal.IsNil() {
@@ -34,55 +33,59 @@ func LoadConfig(filename string, out any) error {
   structType := structVal.Type()
   for i := 0; i < structType.NumField(); i++ {
     field := structType.Field(i)
-    fieldMap[strings.ToLower(field.Name)] = structVal.Field(i)
+    fieldMap[field.Name] = structVal.Field(i)
   }
 
   scanner := bufio.NewScanner(file)
   for scanner.Scan() {
     line := strings.TrimSpace(scanner.Text())
-    if line == "" || strings.HasPrefix(line, "#") {
-      continue // skip empty lines and comments
-    }
+    if line != "" && !strings.HasPrefix(line, "#") {
 
-    parts := strings.Fields(line)
-    if len(parts) < 3 {
-      return errors.New("invalid config line (less than 3 parts): " + line)
-    }
-
-    configKey := strings.ToLower(parts[0])
-    configType := strings.ToLower(parts[1])
-    configValue := strings.Join(parts[2:], " ")
-
-    field, ok := fieldMap[configKey]
-    if !ok || !field.CanSet() {
-      return errors.New("cannot set field: " + configKey)
-    }
-
-    switch configType {
-    case "int":
-      i, err := strconv.Atoi(configValue)
-      if err != nil {
-        return errors.New("invalid int value for key " + configKey)
+      parts := strings.Fields(line)
+      if len(parts) < 3 {
+        return errors.New("Invalid config line (less than 3 parts): " + line)
       }
-      field.SetInt(int64(i))
-    case "bool":
-      b, err := strconv.ParseBool(configValue)
-      if err != nil {
-        return errors.New("invalid bool value for key " + configKey)
+
+      configKey := parts[0]
+      configType := strings.ToLower(parts[1])
+      configValue := strings.Join(parts[2:], " ")
+      
+      field, ok := fieldMap[parts[0]]
+      if !ok || !field.CanSet() {
+        return errors.New("cannot set field: " + configKey)
       }
-      field.SetBool(b)
-    case "float", "float64":
-      f, err := strconv.ParseFloat(configValue, 64)
-      if err != nil {
-        return errors.New("invalid float value for key " + configKey)
+
+      switch configType {
+        case "int":
+          i, err := strconv.Atoi(configValue)
+          if err != nil {
+            return errors.New("Invalid int value for key " + configKey)
+          }
+          field.SetInt(int64(i))
+        case "bool":
+          b, err := strconv.ParseBool(configValue)
+          if err != nil {
+            return errors.New("Invalid bool value for key " + configKey)
+          }
+          field.SetBool(b)
+        case "float", "float64":
+          f, err := strconv.ParseFloat(configValue, 64)
+          if err != nil {
+            return errors.New("Invalid float value for key " + configKey)
+          }
+          field.SetFloat(f)
+        case "filemode":
+          u, err := strconv.ParseUint(configValue, 8, 32)
+          if err != nil {
+            return errors.New("Invalid filemode value for key " + configKey)
+          }
+          field.SetUint(u)
+        case "string":
+          field.SetString(configValue)
+        default:
+          return errors.New("unknown config type: " + configType)
       }
-      field.SetFloat(f)
-    case "string":
-      field.SetString(configValue)
-    default:
-      return errors.New("unknown config type: " + configType)
     }
   }
-
   return scanner.Err()
 }

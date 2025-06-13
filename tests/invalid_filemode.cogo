@@ -4,4 +4,4 @@ Debug bool true
 
 Rate float64 0.75
 Name string example
-ScriptFilePerms filemode 0755
+ScriptFilePerms filemode abcd
