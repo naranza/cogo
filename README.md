@@ -46,7 +46,7 @@ package main
 import (
     "fmt"
     "log"
-    "cogo"
+    "gitlab.com/naranza/cogo"
 )
 
 type Config struct {
@@ -92,5 +92,3 @@ Your tests are in `gogo_test.go` and expect test config files to exist in a `fil
 AGPL-3.0
 Copyright © 2025
 Andrea Davanzo and contributors
-
-```
