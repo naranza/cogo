@@ -11,7 +11,7 @@ import (
   "strings"
 )
 
-const Version = "2025.2"
+const Version = "1.2025.2"
 
 func LoadConfig(filename string, out any) error {
   ptrVal := reflect.ValueOf(out)
